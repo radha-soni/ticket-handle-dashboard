@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import InputBase from '@material-ui/core/InputBase';
@@ -9,9 +9,7 @@ const useStyles = makeStyles((theme) => ({
 	root: {
 		flexGrow: 1
 	},
-	// menuButton: {
-	// 	marginRight: theme.spacing(2)
-	// },
+
 	title: {
 		flexGrow: 1,
 
@@ -59,29 +57,13 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-function Search() {
+function Search({ setSearch }) {
 	const classes = useStyles();
-	// let checkData = null;
-	// useEffect(() => {
-	// 	console.log('running');
-	// 	fetch('http://localhost:3000/getTickets')
-	// 		.then((response) => response.json())
-	// 		.then((ticket) => {
-	// 			checkData = ticket;
-	// 		});
-	// }, []);
-	// console.log(checkData);
 
-	// function handleSearchChange(e) {
-	// 	console.log('in');
-	// 	let inputVal = e.target.value;
-	// 	let filteredData = checkData.filter((el) => {
-	// 		return el.id === inputVal;
-	// 	});
-	// 	// console.log(filteredData);
-	// 	// this.setState({ data: filteredData });
-	// 	// console.log(data);
-	// }
+	function handleSearchChange(e) {
+		let searchVal = e.target.value;
+		setSearch(searchVal);
+	}
 
 	return (
 		<div className={classes.root}>
@@ -92,7 +74,7 @@ function Search() {
 							<SearchIcon />
 						</div>
 						<InputBase
-							// onClick={handleSearchChange}
+							onChange={handleSearchChange}
 							placeholder='Search…'
 							classes={{
 								root: classes.inputRoot,

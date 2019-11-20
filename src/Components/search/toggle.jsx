@@ -1,6 +1,6 @@
 import React from 'react';
 import Switch from '@material-ui/core/Switch';
-import Ticketstable from '../table/table';
+// import Ticketstable from '../table/table';
 import Graph from '../graph/graph';
 
 function Toggle() {
@@ -21,7 +21,7 @@ function Toggle() {
 				value='checkedA'
 				inputProps={{ 'aria-label': 'secondary checkbox' }}
 			/>
-			{/* <div>{state.checkedA ? <Ticketstable /> : <Graph />}</div> */}
+			<div>{!state.checkedA && <Graph />}</div>
 		</div>
 	);
 }

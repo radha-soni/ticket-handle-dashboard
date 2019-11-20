@@ -10,35 +10,35 @@ import '../Components/table/table.css';
 
 function Container() {
 	const [ticket, setTicket] = useState(null);
+	const [example, setExample] = useState('example');
+	const [search, setSearch] = useState('');
+
 	useEffect(() => {
-		console.log('running');
 		fetch('http://localhost:3000/getTickets')
 			.then((response) => response.json())
 			.then((ticket) => {
-				renderData(ticket);
+				setTicket(ticket);
 			});
 	}, []);
-	function renderData(ticket) {
-		setTicket(ticket);
-	}
 
 	return (
 		<div>
 			<Navbar />
-			<Search />
-			{/* <Toggle /> */}
-			{ticket && ticket.data.length ? (
-				<Ticketstable ticket={ticket} />
-			) : (
-				'loading'
-			)}
-			<Ticketstable />
+			{ticket && <Search setSearch={setSearch} />}
 
-			{ticket && ticket.data.length ? (
-				<Graph ticket={ticket} />
+			{/* <Toggle /> */}
+			{ticket ? (
+				<Ticketstable
+					ticket={ticket}
+					setTicket={setTicket}
+					search={search}
+					setSearch={setSearch}
+				/>
 			) : (
-				'loading'
+				<h1>please wait while Loading</h1>
 			)}
+
+			{/* {ticket && <Graph ticket={ticket} />} */}
 		</div>
 	);
 }
