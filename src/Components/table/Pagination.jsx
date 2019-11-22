@@ -9,7 +9,7 @@ function Pagination({ postPerPage, paginate, currentPage }) {
 	return (
 		<div className='center-pagination'>
 			<div className='pagination'>
-				<a href='!#'>&laquo;</a>
+				{/* <a href='!#'>&laquo;</a> */}
 				{pageNumber.map((number) => {
 					return (
 						<a
@@ -27,7 +27,7 @@ function Pagination({ postPerPage, paginate, currentPage }) {
 					);
 				})}
 
-				<a href='!#'>&raquo;</a>
+				{/* <a href='!#'>&raquo;</a> */}
 			</div>
 		</div>
 	);
