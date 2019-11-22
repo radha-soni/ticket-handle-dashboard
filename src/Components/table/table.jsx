@@ -17,18 +17,36 @@ const useStyles = makeStyles({
 		minWidth: 650
 	},
 	th: {
-		fontSize: '20px'
+		fontSize: '20px',
+
+		fontFamily: 'monospace',
+		textAlign: 'center',
+		color: 'white'
 	},
 	table_header: {
-		background: 'blue'
+		background: '#3f51b5'
+	},
+	table_columns: {
+		fontFamily: 'monospace'
+	},
+	table_escalate: {
+		textAlign: 'center'
 	}
 });
 
-function Ticketstable({ ticket, setTicket, search, setSearch }) {
+function Ticketstable({
+	ticket,
+	setTicket,
+	search,
+	setSearch,
+	indexOfLastPost,
+	indexOfFirstPost
+}) {
 	const classes = useStyles();
 	const [dataStatus, setDataStatus] = useState('all');
 	const [open, setOpen] = useState(false);
 	const [filter, setFilter] = useState(false);
+	const currentPost = ticket.slice(indexOfFirstPost, indexOfLastPost);
 
 	function handlePendingStatus(e) {
 		const statusId = Number(e.target.value);
@@ -48,7 +66,6 @@ function Ticketstable({ ticket, setTicket, search, setSearch }) {
 						if (obj.id === statusId) {
 							obj.status = 2;
 							obj.updated_at = response.updated_at;
-							console.log(response.updated_at);
 						}
 						return obj;
 					});
@@ -116,9 +133,9 @@ function Ticketstable({ ticket, setTicket, search, setSearch }) {
 		});
 	}
 
-	function checkData(ticket) {
+	function checkData(currentPost) {
 		let filteredTicket;
-		filteredTicket = ticket.filter((obj) => {
+		filteredTicket = currentPost.filter((obj) => {
 			return String(obj.id).includes(search);
 		});
 		if (dataStatus === 'completed') {
@@ -137,7 +154,7 @@ function Ticketstable({ ticket, setTicket, search, setSearch }) {
 			} = ticketDetails;
 
 			return (
-				<TableRow key={id}>
+				<TableRow className={classes.table_columns} key={id}>
 					<TableCell>{id}</TableCell>
 					<TableCell>
 						{created_at && created_at.slice(0, 10)}
@@ -163,7 +180,9 @@ function Ticketstable({ ticket, setTicket, search, setSearch }) {
 						)}
 					</TableCell>
 
-					<TableCell>{is_escalated ? 'Yes' : 'No'}</TableCell>
+					<TableCell className={classes.table_escalate}>
+						{is_escalated ? 'Yes' : 'No'}
+					</TableCell>
 				</TableRow>
 			);
 		});
@@ -212,6 +231,7 @@ function Ticketstable({ ticket, setTicket, search, setSearch }) {
 							<TableCell className={classes.th}>
 								Ticket No.
 							</TableCell>
+
 							<TableCell className={classes.th}>
 								Created date
 							</TableCell>
@@ -221,13 +241,15 @@ function Ticketstable({ ticket, setTicket, search, setSearch }) {
 							<TableCell className={classes.th}>
 								Description
 							</TableCell>
+
 							<TableCell className={classes.th}>Status</TableCell>
+
 							<TableCell className={classes.th}>
 								Escalated
 							</TableCell>
 						</TableRow>
 					</TableHead>
-					<TableBody>{checkData(ticket)}</TableBody>
+					<TableBody>{checkData(currentPost)}</TableBody>
 				</Table>
 			</Paper>
 		</div>

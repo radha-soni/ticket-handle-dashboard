@@ -1,38 +1,62 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 function Graph({ ticket }) {
-	const groups = ticket.map((obj) => {
-		return {
-			id: obj.id,
-			created_at: obj.created_at,
-			updated_at: obj.updated_at,
-			status: obj.status,
-			is_escalated: obj.is_escalated
-		};
-	});
-	const data = [];
-	const created_at = [];
-	const updated_at = [];
-	for (let i = 0; i < 50; i++) {
-		data.push(i);
-		let slicedTime = groups[i].created_at.slice(0, 10);
-		created_at.push(slicedTime);
-		let dicedTime = groups[i].updated_at.slice(0, 10);
-		updated_at.push(dicedTime);
-	}
+	const [chartCreatedData, setChartCreatedData] = useState([]);
+
+	useEffect(() => {
+		function remove(allDates) {
+			let chartCreatedDataArr = [];
+			let updatedCreateDate = [...new Set(allDates)];
+			let filterUpdatedData, filterCreatedData;
+
+			for (let i = 0; i < updatedCreateDate.length; i++) {
+				filterCreatedData = ticket.filter((obj) => {
+					if (obj.created_at.slice(0, 10) === updatedCreateDate[i]) {
+						return true;
+					}
+					return false;
+				});
+				filterUpdatedData = ticket.filter((obj) => {
+					if (obj.updated_at.slice(0, 10) === updatedCreateDate[i]) {
+						return true;
+					}
+					return false;
+				});
+				chartCreatedDataArr.push({
+					ticketsCreated: filterCreatedData.length,
+					ticketsUpdated: filterUpdatedData.length,
+					date: updatedCreateDate[i].slice(0, 10)
+				});
+			}
+			chartCreatedDataArr.sort((a, b) => {
+				a = new Date(a.date);
+				b = new Date(b.date);
+				return a.getTime() - b.getTime();
+			});
+			setChartCreatedData(chartCreatedDataArr);
+		}
+
+		let allDates = [];
+		for (let i = 0; i < ticket.length; i++) {
+			allDates.push(ticket[i].created_at.slice(0, 10));
+			allDates.push(ticket[i].updated_at.slice(0, 10));
+		}
+
+		remove(allDates);
+	}, []);
 
 	const graphdata = {
 		dataFirst: {
 			label: 'ticket created',
-			data: data,
+			data: chartCreatedData.map((obj) => obj.ticketsCreated),
 			lineTension: 0,
 			fill: false,
-			borderColor: 'red'
+			borderColor: '#5f5f5f'
 		},
 
 		dataSecond: {
 			label: 'ticket updated',
-			data: data,
+			data: chartCreatedData.map((obj) => obj.ticketsUpdated),
 			lineTension: 0,
 			fill: false,
 			borderColor: 'blue'
@@ -80,7 +104,7 @@ function Graph({ ticket }) {
 				yAxes: [
 					{
 						ticks: {
-							stepSize: 1
+							stepSize: 10
 						},
 						scaleLabel: {
 							display: true,
@@ -93,16 +117,17 @@ function Graph({ ticket }) {
 		}
 	};
 	var speedData = {
-		labels: updated_at,
+		labels: chartCreatedData.map((obj) => obj.date),
 		datasets: [graphdata.dataFirst, graphdata.dataSecond]
 	};
+
 	return (
 		<div>
 			<Line
 				data={speedData}
 				options={graphdata.options}
 				width={100}
-				height={100}
+				height={35}
 			/>
 		</div>
 	);
