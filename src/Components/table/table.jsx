@@ -122,6 +122,9 @@ function Ticketstable({
 		});
 		setDataStatus('pending');
 	}
+	function handleSortAll() {
+		setDataStatus('all');
+	}
 	function handleSortBtn() {
 		setOpen((prevState) => {
 			return !prevState;
@@ -142,6 +145,8 @@ function Ticketstable({
 			filteredTicket = filteredTicket.filter((obj) => obj.status === 2);
 		} else if (dataStatus === 'pending') {
 			filteredTicket = filteredTicket.filter((obj) => obj.status !== 2);
+		} else if (dataStatus === 'All') {
+			return filteredTicket;
 		}
 		return filteredTicket.map((ticketDetails) => {
 			const {
@@ -218,6 +223,7 @@ function Ticketstable({
 								<button onClick={handleSortPending}>
 									pending
 								</button>
+								<button onClick={handleSortAll}>All</button>
 							</div>
 						)}
 					</div>
